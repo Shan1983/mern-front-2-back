@@ -2,6 +2,7 @@ const express = require('express');
 const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
 const router = express.Router();
 
 // user model
@@ -9,6 +10,10 @@ const User = require('../../models/User');
 
 // config
 const keys = require('../../config/keys');
+
+// validation
+const { validateRegisterInput } = require('../../validation/register');
+const { validateLoginInput } = require('../../validation/login');
 
 // @route GET api/users/test
 // @desc tests users route
@@ -21,12 +26,20 @@ router.get('/test', (req, res) => {
 // @desc register a new user
 // @access public
 router.post('/register', (req, res) => {
+  // validate input
+  const { errors, isValid } = validateRegisterInput(req.body);
+  // check if its valid
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
   // search for existing email
   // users can only register one email
   User.findOne({ email: req.body.email })
     .then(user => {
       if (user) {
-        return res.status(400).json({ email: 'email exists' });
+        errors.email = 'Email already exists.';
+        return res.status(400).json({ errors });
       } else {
         const avatar = gravatar.url(req.body.email, {
           s: '200', //size
@@ -61,6 +74,13 @@ router.post('/register', (req, res) => {
 // @desc login a user. Returns a jwt token
 // @access public
 router.post('/login', (req, res) => {
+  // validate input
+  const { errors, isValid } = validateLoginInput(req.body);
+  // check if its valid
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
   const { email, password } = req.body;
 
   // find by email
@@ -68,7 +88,8 @@ router.post('/login', (req, res) => {
     .then(user => {
       // check for the user
       if (!user) {
-        return res.status(404).json({ email: 'User not found' });
+        errors.email = 'User not found.';
+        return res.status(404).json({ errors });
       }
 
       // check passwords
@@ -92,8 +113,9 @@ router.post('/login', (req, res) => {
               },
             );
           } else {
+            errors.password = 'Incorrect password.';
             return res.status(400).json({
-              password: 'password incorrect',
+              errors,
             });
           }
         })
@@ -101,5 +123,20 @@ router.post('/login', (req, res) => {
     })
     .catch(err => console.log(err));
 });
+
+// @route GET api/users/current
+// @desc returns current user
+// @access private
+router.get(
+  '/current',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    res.json({
+      id: req.user.id,
+      name: req.user.name,
+      email: req.user.email,
+    });
+  },
+);
 
 module.exports = router;
