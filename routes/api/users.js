@@ -50,7 +50,39 @@ router.post('/register', (req, res) => {
         });
       }
     })
-    .catch();
+    .catch(err => console.log(err));
+});
+
+// @route GET api/users/login
+// @desc login a user. Returns a jwt token
+// @access public
+router.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  // find by email
+  User.findOne({ email })
+    .then(user => {
+      // check for the user
+      if (!user) {
+        return res.status(404).json({ email: 'User not found' });
+      }
+
+      // check passwords
+      bcrypt
+        .compare(password, user.password)
+        .then(isMatch => {
+          if (isMatch) {
+            // gen token
+            res.json({ msg: 'success' });
+          } else {
+            return res.status(400).json({
+              password: 'password incorrect',
+            });
+          }
+        })
+        .catch(err => console.log(err));
+    })
+    .catch(err => console.log(err));
 });
 
 module.exports = router;
