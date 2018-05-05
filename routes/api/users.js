@@ -89,7 +89,7 @@ router.post('/login', (req, res) => {
       // check for the user
       if (!user) {
         errors.email = 'User not found.';
-        return res.status(404).json({ errors });
+        return res.status(404).json(errors);
       }
 
       // check passwords
@@ -114,9 +114,7 @@ router.post('/login', (req, res) => {
             );
           } else {
             errors.password = 'Incorrect password.';
-            return res.status(400).json({
-              errors,
-            });
+            return res.status(400).json(errors);
           }
         })
         .catch(err => console.log(err));
