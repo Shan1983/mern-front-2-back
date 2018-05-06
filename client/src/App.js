@@ -28,7 +28,7 @@ if (localStorage.jwtToken) {
     console.log('times up');
     store.dispatch(logoutUser());
     // send them packing to the login screen
-    window.href = '/login';
+    window.location.href = '/login';
     // clear current profile
     // TODO
   }
