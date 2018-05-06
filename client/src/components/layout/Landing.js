@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
+import store from '../../store';
+import { authSetUp } from '../common/authSetup';
 
 class Landing extends Component {
   componentDidMount() {
+    authSetUp(store);
     if (this.props.auth.isAuthenticated) {
       this.props.history.push('/dashboard');
     }
