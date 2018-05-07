@@ -4,6 +4,7 @@ import {
   PROFILE_LOADING,
   CLEAR_CURRENT_PROFILE,
   GET_ERRORS,
+  SET_CURRENT_USER,
 } from './types';
 
 // get the current profile
@@ -40,6 +41,26 @@ export const createNewProfile = (profileData, history) => dispatch => {
         payload: err.response.data,
       }),
     );
+};
+
+// delete the users account + profile
+export const deleteAccount = () => dispatch => {
+  if (window.confirm('This is perminate. Are you absolutely sure?')) {
+    axios
+      .delete(`api/profile`)
+      .then(response =>
+        dispatch({
+          type: SET_CURRENT_USER,
+          payload: {},
+        }),
+      )
+      .catch(err =>
+        dispatch({
+          type: GET_ERRORS,
+          payload: err.response.data,
+        }),
+      );
+  }
 };
 
 // profile loading
