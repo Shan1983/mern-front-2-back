@@ -76,6 +76,19 @@ export const addExp = (expData, history) => dispatch => {
     );
 };
 
+// add education
+export const addEdu = (eduData, history) => dispatch => {
+  axios
+    .post(`api/profile/education`, eduData)
+    .then(response => history.push('/dashboard'))
+    .catch(err =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data,
+      }),
+    );
+};
+
 // profile loading
 export const setProfileLoading = () => {
   return {
