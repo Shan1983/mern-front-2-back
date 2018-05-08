@@ -15,6 +15,7 @@ import Register from './components/auth/Register';
 import Dashboard from './components/dashboard/Dashboard';
 import CreateProfile from './components/create-profile/CreateProfile';
 import EditProfile from './components/edit-profile/EditProfile';
+import AddExperince from './components/add-credentials/AddExperience';
 
 import PrivateRoute from './components/common/PrivateRoute';
 
@@ -47,6 +48,11 @@ class App extends Component {
                   exact
                   path="/edit-profile"
                   component={EditProfile}
+                />
+                <PrivateRoute
+                  exact
+                  path="/add-experience"
+                  component={AddExperince}
                 />
               </Switch>
               {/* <Switch>
