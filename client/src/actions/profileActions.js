@@ -63,6 +63,19 @@ export const deleteAccount = () => dispatch => {
   }
 };
 
+// add experince
+export const addExp = (expData, history) => dispatch => {
+  axios
+    .post(`api/profile/experience`, expData)
+    .then(response => history.push('/dashboard'))
+    .catch(err =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data,
+      }),
+    );
+};
+
 // profile loading
 export const setProfileLoading = () => {
   return {

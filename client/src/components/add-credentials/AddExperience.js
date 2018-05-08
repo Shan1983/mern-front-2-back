@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import TextFieldGroup from '../common/TextFieldGroup';
 import TextAreaFieldGroup from '../common/TextAreaFieldGroup';
 import propTypes from 'prop-types';
+import { addExp } from '../../actions/profileActions';
 
 class AddExperience extends Component {
   state = {
@@ -20,7 +21,29 @@ class AddExperience extends Component {
 
   onSubmit = e => {
     e.preventDefault();
-    console.log('submit');
+    // grab what we want from the component state
+    const {
+      company,
+      title,
+      location,
+      from,
+      to,
+      description,
+      current,
+    } = this.state;
+
+    // create the object to pass to the action
+    const expData = {
+      company,
+      title,
+      location,
+      from,
+      to,
+      description,
+      current,
+    };
+    // add the exp.
+    this.props.addExp(expData, this.props.history);
   };
 
   onChange = e => {
@@ -35,6 +58,12 @@ class AddExperience extends Component {
       current: !this.state.current,
     });
   };
+
+  static getDerivedStateFromProps(nextProps) {
+    if (nextProps.errors) {
+      return { errors: nextProps.errors };
+    }
+  }
 
   render() {
     const { errors } = this.state;
@@ -128,6 +157,7 @@ class AddExperience extends Component {
 AddExperience.propTypes = {
   profile: propTypes.object.isRequired,
   errors: propTypes.object.isRequired,
+  addExp: propTypes.func.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {
@@ -137,4 +167,4 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps, {})(withRouter(AddExperience));
+export default connect(mapStateToProps, { addExp })(withRouter(AddExperience));
