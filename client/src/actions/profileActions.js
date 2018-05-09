@@ -164,13 +164,13 @@ export const getProfileByHandle = handle => dispatch => {
     .get(`/api/profile/handle/${handle}`)
     .then(response =>
       dispatch({
-        type: GET_PROFILES,
+        type: GET_PROFILE,
         payload: response.data,
       }),
     )
     .catch(err =>
       dispatch({
-        type: GET_PROFILES,
+        type: GET_PROFILE,
         payload: null,
       }),
     );
